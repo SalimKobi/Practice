@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Call Example</title>
+  </head>
+  <body>
+    <div id="content">
+      <h1>Hello Vanilla JavaScript</h1>
+      <h2>Check the console for API responses</h2>
+    </div>
+
+    <script>
+      // Function to fetch the initial path
+      function fetchInitialPath() {
+        const proxyUrl = "https://api.allorigins.win/get?url=";
+        const targetUrl = encodeURIComponent(
+          "https://ciphersprint.pulley.com/salimkobi9@gmail.com"
+        );
+        const url = `${proxyUrl}${targetUrl}`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            const pathOne = JSON.parse(data.contents).encrypted_path;
+            console.log(`Path One: ${pathOne}`);
+            fetchSecondPath(pathOne);
+          })
+          .catch((error) =>
+            console.error("Error fetching initial path:", error)
+          );
+      }
+
+      // Function to fetch the second path
+      function fetchSecondPath(pathOne) {
+        const proxyUrl = "https://api.allorigins.win/get?url=";
+        const targetUrl = encodeURIComponent(
+          `https://ciphersprint.pulley.com/${pathOne}`
+        );
+        const url = `${proxyUrl}${targetUrl}`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            const encryptedPath = JSON.parse(data.contents).encrypted_path;
+            console.log("Encrypted Path:", encryptedPath);
+
+            // Remove "task_" and parse the array
+            const convertedArray = encryptedPath.replace("task_", "");
+            const actualArray = JSON.parse(convertedArray);
+
+            // Convert ASCII values to characters
+            const decryptedPath = actualArray
+              .map((value) => String.fromCharCode(value))
+              .join("");
+
+            // Form the next URL
+            const nextUrl = `https://ciphersprint.pulley.com/task_${decryptedPath}`;
+            console.log("Next URL:", nextUrl);
+
+            fetchNextChallenge(nextUrl);
+          })
+          .catch((error) =>
+            console.error("Error fetching second path:", error)
+          );
+      }
+
+      // Function to fetch the next challenge
+      function fetchNextChallenge(nextUrl) {
+        const proxyUrl = "https://api.allorigins.win/get?url=";
+        const targetUrl = encodeURIComponent(nextUrl);
+        const url = `${proxyUrl}${targetUrl}`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Next Challenge Response:", data);
+            const pathFour = JSON.parse(data.contents).encrypted_path;
+            console.log("i am here" + " " + pathFour);
+            fetchFourthChallenge(pathFour);
+          })
+          .catch((error) =>
+            console.error("Error fetching next challenge:", error)
+          );
+      }
+      function fetchFourthChallenge(pathFour) {
+        const proxyUrl = "https://api.allorigins.win/get?url=";
+        const targetUrl = encodeURIComponent(
+          `https://ciphersprint.pulley.com/${pathFour}`
+        );
+        const newTarget = `https://ciphersprint.pulley.com/${pathFour}`;
+        window.open(newTarget, "_blank");
+        const url = `${proxyUrl}${targetUrl}`;
+
+        fetch(url)
+          .then((response) => response)
+          .then((data) => {
+            console.log("Next Challenge Response:", data);
+            const pathFive = data;
+            console.log(pathFive);
+            console.log("latest" + " " + pathFive);
+          })
+          .catch((error) =>
+            console.error("Error fetching next challenge:", error)
+          );
+      }
+
+      // Fetch the initial path on page load
+      fetchInitialPath();
+    </script>
+  </body>
+</html>
